@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1">
+<link rel="stylesheet" href="styles.css?v=2">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script defer src="app.js?v=1"></script>
+<script defer src="app.js?v=2"></script>
 </head>
 <body>
 
@@ -33,7 +33,7 @@
       <h3>איך מצטרפים?</h3>
       <ul>
         <li>נרשמים כאן בטופס — <strong>בחינם ובלי שום התחייבות</strong></li>
-        <li>אנחנו שולחים אליכם דוא״ל עם קישור להורדת האפליקציה</li>
+        <li>אנחנו שולחים אליכם דוא"ל עם קישור להורדת האפליקציה</li>
         <li>מתחילים לשחק וללמוד. לא מתאים? תמיד אפשר למחוק</li>
       </ul>
       <p class="hint">בעתיד האפליקציה תהיה בתשלום — ההשתתפות בפיילוט היא בחינם.</p>
@@ -61,12 +61,12 @@
       </select>
     </label>
 
-    <label>כתובת דוא״ל ליצירת קשר <span class="req">*</span>
+    <label>כתובת דוא"ל ליצירת קשר <span class="req">*</span>
       <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" style="direction:ltr; text-align:right">
     </label>
-    <p class="hint">אין לך כתובת דוא״ל משלך? אפשר לרשום את הדוא״ל של הורה, מורה, רב או סבא/סבתא — אנחנו נשלח אליהם את הקישור.</p>
+    <p class="hint">אין לך כתובת דוא"ל משלך? אפשר לרשום את הדוא"ל של הורה, מורה, רב או סבא/סבתא — אנחנו נשלח אליהם את הקישור.</p>
 
-    <label>של מי כתובת הדוא״ל? <span class="req">*</span>
+    <label>של מי כתובת הדוא"ל? <span class="req">*</span>
       <select name="email_owner" required>
         <option value="">בחרו…</option>
         <option>שלי</option>
@@ -89,7 +89,7 @@
   <section id="apply-success" class="card success" hidden>
     <div class="check">✓</div>
     <h2>נרשמת בהצלחה!</h2>
-    <p>תודה! אנחנו נשלח אליך דוא״ל עם קישור להורדת האפליקציה. שווה לבדוק גם בתיקיית הספאם.</p>
+    <p>תודה! אנחנו נשלח אליך דוא"ל עם קישור להורדת האפליקציה. שווה לבדוק גם בתיקיית הספאם.</p>
   </section>
 </main>
 
@@ -98,15 +98,15 @@
 
   <section id="admin-gate" class="card gate">
     <h2>כניסת צוות בלבד</h2>
-    <p class="hint">הגישה מיועדת לצוות טעמים בלבד. מזינים דוא״ל ומבקשים קישור כניסה — בלי סיסמה.</p>
+    <p class="hint">הגישה מיועדת לצוות טעמים בלבד. מזינים דוא"ל ומבקשים קישור כניסה — בלי סיסמה.</p>
     <p class="hint" id="app-version" style="opacity:.55; font-size:.8em;"></p>
-    <label>דוא״ל
+    <label>דוא"ל
       <input type="email" id="admin-email" autocomplete="email" placeholder="you@example.com">
     </label>
     <div id="gate-error" class="error" hidden></div>
     <div id="gate-msg" class="hint" hidden></div>
     <div class="gate-actions">
-      <button class="btn btn-primary" id="magic-btn">שליחת קישור כניסה לדוא״ל</button>
+      <button class="btn btn-primary" id="magic-btn">שליחת קישור כניסה לדוא"ל</button>
     </div>
   </section>
 
@@ -116,7 +116,7 @@
       <div class="stats" id="stats"></div>
       <div class="admin-actions">
         <button class="btn btn-green" id="export-xlsx">ייצוא לאקסל</button>
-        <input type="search" id="search" placeholder="חיפוש לפי שם, בית ספר, דוא״ל…">
+        <input type="search" id="search" placeholder="חיפוש לפי שם, בית ספר, דוא"ל…">
         <button class="btn btn-soft" id="signout-btn">יציאה</button>
       </div>
     </div>
