@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script defer src="app.js?v=3"></script>
+<script defer src="app.js?v=4"></script>
 </head>
 <body>
 
@@ -33,30 +33,35 @@
       <h3>איך מצטרפים?</h3>
       <ul>
         <li>נרשמים כאן בטופס — <strong>בחינם ובלי שום התחייבות</strong></li>
-        <li>אנחנו שולחים אליכם דוא"ל עם קישור להורדת האפליקציה</li>
+        <li>בשבועות הקרובים אנחנו שולחים אליכם דוא"ל עם קישור להורדת האפליקציה</li>
         <li>מתחילים לשחק וללמוד. לא מתאים? תמיד אפשר למחוק</li>
       </ul>
-      <p class="hint">בעתיד האפליקציה תהיה בתשלום — ההשתתפות בפיילוט היא בחינם.</p>
+      <p class="hint">בעתיד האפליקציה תהיה בתשלום — אבל ההשתתפות בפיילוט בחינם לנרשמים עכשיו. שווה להיות מהראשונים!</p>
     </div>
   </section>
 
   <form id="apply-form" class="card" novalidate>
     <h2>טופס הרשמה לפיילוט</h2>
 
-    <label>שם פרטי (לא חובה)
-      <input type="text" name="first_name" autocomplete="given-name">
+    <label>שם פרטי <span class="req">*</span>
+      <input type="text" name="first_name" required autocomplete="given-name">
     </label>
 
-    <label>בית ספר ועיר (לא חובה)
-      <input type="text" name="school_city" placeholder="למשל: אמית, מודיעין">
+    <label>שם משפחה <span class="req">*</span>
+      <input type="text" name="last_name" required autocomplete="family-name">
     </label>
+
+    <label>בית ספר ועיר של התלמיד/ה <span class="req">*</span>
+      <input type="text" name="school_city" id="school-city" placeholder="למשל: אמית, מודיעין">
+    </label>
+    <p class="hint">גם אם הורה או מורה ממלאים את הטופס — כותבים את בית הספר של התלמיד/ה.</p>
+    <label class="consent-check" style="margin-top:-6px"><input type="checkbox" id="no-school"> התלמיד/ה לא לומד/ת בבית ספר כרגע</label>
 
     <label>כיתה (לא חובה)
       <select name="grade">
         <option value="">בחרו…</option>
+        <option>ו</option>
         <option>ז</option>
-        <option>ח</option>
-        <option>ט</option>
         <option>אחר</option>
       </select>
     </label>
@@ -80,7 +85,7 @@
 
     <div id="form-error" class="error" hidden></div>
     <div class="consent-box">
-      <p>הפרטים יישמרו אצל צוות טעמים וישמשו רק ליצירת קשר לגבי הפיילוט — לא לשום מטרה אחרת. אם אני מתחת לגיל 18, ההורה או האחראי שלי יודע על ההרשמה ומסכים לה.</p>
+      <p>הפרטים יישמרו אצל צוות טעמים וישמשו רק ליצירת קשר לגבי הפיילוט — לא לשום מטרה אחרת. אם אני מתחת לגיל 18, ההורה או האפוטרופוס שלי יודע על ההרשמה ומסכים לה.</p>
       <label class="consent-check"><input type="checkbox" id="consent-check"> קראתי ואני מסכים/ה</label>
     </div>
     <button type="submit" class="btn btn-primary" id="submit-btn">נרשמים לפיילוט</button>
@@ -89,7 +94,7 @@
   <section id="apply-success" class="card success" hidden>
     <div class="check">✓</div>
     <h2>נרשמת בהצלחה!</h2>
-    <p>תודה! אנחנו נשלח אליך דוא"ל עם קישור להורדת האפליקציה. שווה לבדוק גם בתיקיית הספאם.</p>
+    <p>תודה! בשבועות הקרובים נשלח דוא"ל עם קישור להורדת האפליקציה. שווה לבדוק גם בתיקיית הספאם.</p>
   </section>
 </main>
 
