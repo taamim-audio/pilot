@@ -129,7 +129,7 @@ async function signOut() {
 }
 async function refreshAdminList() {
   const { data, error } = await sb
-    .from('pilot_registrations')
+    .from(TABLE)
     .select('*')
     .order('created_at', { ascending: false });
   if (error) {
