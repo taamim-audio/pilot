@@ -6,48 +6,62 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { width:1080px; height:1350px; overflow:hidden; font-family:'Open Sans',sans-serif;
-    background: linear-gradient(160deg, #A0D1FA 0%, #B7DBF9 55%, #d6eafb 100%);
-    display:flex; flex-direction:column; align-items:center; position:relative; }
-  .candy { position:absolute; opacity:.9; }
-  .badge { margin-top:34px; width:170px; height:170px; border-radius:50%;
-    background:#FFC727; border:9px solid #fff; box-shadow:0 8px 24px rgba(55,71,79,.25);
-    display:flex; align-items:center; justify-content:center;
-    font-size:52px; font-weight:800; color:#37474F; }
-  h1 { margin-top:22px; font-size:68px; font-weight:800; color:#37474F; text-align:center; line-height:1.15; }
-  .sub { margin-top:14px; font-size:34px; font-weight:700; color:#37474F; text-align:center; padding:0 50px; }
-  .points { margin-top:24px; background:#F9F3E7; border:5px dashed #FFC727; border-radius:32px;
-    padding:24px 46px; width:840px; }
-  .points div { font-size:33px; font-weight:700; color:#37474F; margin:10px 0; display:flex; align-items:center; gap:16px; }
-  .dot { width:22px; height:22px; min-width:22px; border-radius:50%; background:#FFC727; border:4px solid #37474F; }
-  .cta { margin-top:24px; font-size:46px; font-weight:800; color:#37474F; }
-  .qrbox { margin-top:16px; background:#fff; padding:18px; border-radius:24px; box-shadow:0 8px 24px rgba(55,71,79,.2); }
-  .url { margin-top:14px; font-size:28px; font-weight:700; color:#37474F; direction:ltr; }
-  .note { margin-top:8px; font-size:23px; font-weight:600; color:#5a6b73; }
-  .foot { position:absolute; bottom:16px; font-size:22px; font-weight:600; color:#5a6b73; }
+    background: radial-gradient(ellipse 900px 620px at 50% 240px, #4a6070 0%, #37474F 48%, #26333a 100%);
+    display:flex; flex-direction:column; align-items:center; position:relative; color:#F9F3E7; }
+  .glow { position:absolute; top:60px; width:640px; height:340px; border-radius:50%;
+    background: radial-gradient(ellipse, rgba(255,199,39,.30) 0%, rgba(255,199,39,0) 70%); pointer-events:none; }
+  .logo { margin-top:52px; width:400px; position:relative;
+    filter: drop-shadow(0 6px 26px rgba(255,199,39,.45)); }
+  h1 { margin-top:26px; font-size:66px; font-weight:800; color:#FFC727; text-align:center; line-height:1.18;
+    text-shadow: 0 4px 0 rgba(0,0,0,.35); position:relative; }
+  .sub { margin-top:16px; font-size:33px; font-weight:700; color:#F9F3E7; text-align:center; padding:0 56px; position:relative; }
+  .chips { margin-top:30px; display:flex; flex-direction:column; gap:14px; position:relative; }
+  .chip { background: rgba(249,243,231,.10); border:3px solid #FFC727; border-radius:999px;
+    padding:13px 34px; font-size:30px; font-weight:700; color:#F9F3E7; display:flex; align-items:center; gap:14px; }
+  .chip .dot { width:18px; height:18px; min-width:18px; border-radius:50%; background:#FFC727;
+    box-shadow:0 0 12px rgba(255,199,39,.9); }
+  .cta { margin-top:30px; font-size:46px; font-weight:800; color:#FFC727; position:relative;
+    text-shadow: 0 3px 0 rgba(0,0,0,.35); }
+  .qrbox { margin-top:18px; background:#F9F3E7; padding:20px; border-radius:28px; position:relative;
+    border:5px solid #FFC727; box-shadow:0 14px 40px rgba(0,0,0,.45); }
+  .url { margin-top:16px; font-size:29px; font-weight:800; color:#F9F3E7; direction:ltr; letter-spacing:.5px; position:relative; }
+  .collab { position:absolute; bottom:34px; display:flex; align-items:center; gap:20px; }
+  .collab img { height:78px; }
+  .collab span { font-size:25px; font-weight:700; color:#cfd8dc; }
+  .spark { position:absolute; }
 </style>
 </head>
 <body>
-  <svg class="candy" style="top:120px; right:60px" width="90" height="90" viewBox="0 0 90 90"><g transform="rotate(25 45 45)"><rect x="25" y="32" width="40" height="26" rx="13" fill="#FFC727" stroke="#37474F" stroke-width="4"/><polygon points="25,45 8,32 8,58" fill="#fff" stroke="#37474F" stroke-width="4"/><polygon points="65,45 82,32 82,58" fill="#fff" stroke="#37474F" stroke-width="4"/></g></svg>
-  <svg class="candy" style="top:420px; left:70px" width="70" height="70" viewBox="0 0 90 90"><g transform="rotate(-20 45 45)"><rect x="25" y="32" width="40" height="26" rx="13" fill="#F9F3E7" stroke="#37474F" stroke-width="4"/><polygon points="25,45 8,32 8,58" fill="#FFC727" stroke="#37474F" stroke-width="4"/><polygon points="65,45 82,32 82,58" fill="#FFC727" stroke="#37474F" stroke-width="4"/></g></svg>
-  <svg class="candy" style="bottom:200px; right:90px" width="80" height="80" viewBox="0 0 90 90"><g transform="rotate(40 45 45)"><rect x="25" y="32" width="40" height="26" rx="13" fill="#FFC727" stroke="#37474F" stroke-width="4"/><polygon points="25,45 8,32 8,58" fill="#fff" stroke="#37474F" stroke-width="4"/><polygon points="65,45 82,32 82,58" fill="#fff" stroke="#37474F" stroke-width="4"/></g></svg>
-  <svg class="candy" style="top:36px; left:22%" width="60" height="60" viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z" fill="#fff" stroke="#37474F" stroke-width="1.2"/></svg>
-  <svg class="candy" style="bottom:330px; left:110px" width="50" height="50" viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z" fill="#FFC727" stroke="#37474F" stroke-width="1.2"/></svg>
+  <div class="glow"></div>
 
-  <div class="badge">טעמים</div>
+  <svg class="spark" style="top:90px; right:70px" width="70" height="70" viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z" fill="#FFC727" opacity=".9"/></svg>
+  <svg class="spark" style="top:340px; left:64px" width="46" height="46" viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z" fill="#F9F3E7" opacity=".7"/></svg>
+  <svg class="spark" style="bottom:430px; right:80px" width="54" height="54" viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z" fill="#A0D1FA" opacity=".8"/></svg>
+  <svg class="spark" style="top:220px; left:90px" width="80" height="80" viewBox="0 0 90 90"><g transform="rotate(-18 45 45)"><rect x="25" y="32" width="40" height="26" rx="13" fill="#FFC727"/><polygon points="25,45 8,32 8,58" fill="#F9F3E7"/><polygon points="65,45 82,32 82,58" fill="#F9F3E7"/></g></svg>
+  <svg class="spark" style="bottom:330px; left:70px" width="64" height="64" viewBox="0 0 90 90"><g transform="rotate(30 45 45)"><rect x="25" y="32" width="40" height="26" rx="13" fill="#A0D1FA"/><polygon points="25,45 8,32 8,58" fill="#FFC727"/><polygon points="65,45 82,32 82,58" fill="#FFC727"/></g></svg>
+
+  <img class="logo" src="assets/taamim-logo.png" alt="טעמים">
   <h1>לומדים לקרוא בתורה<br>בכיף אמיתי! 🎮✨</h1>
   <p class="sub">משחקים, אנימציות ונקודות ממתקים שאוספים תוך כדי 🍬</p>
-  <div class="points">
-    <div><span class="dot"></span>המורה שלך איתך צעד-צעד</div>
-    <div><span class="dot"></span>פיילוט חינם למצטרפים עכשיו — בלי שום התחייבות</div>
-    <div><span class="dot"></span>ועוד תוספות מגניבות בדרך אליך</div>
+
+  <div class="chips">
+    <div class="chip"><span class="dot"></span>המורה שלך איתך צעד-צעד</div>
+    <div class="chip"><span class="dot"></span>פיילוט חינם למצטרפים עכשיו — בלי התחייבות</div>
+    <div class="chip"><span class="dot"></span>ועוד תוספות מגניבות בדרך אליך</div>
   </div>
+
   <p class="cta">סורקים ונרשמים לפיילוט!</p>
   <div class="qrbox"><div id="qr"></div></div>
   <p class="url">taamim-audio.github.io/pilot</p>
-  <p class="foot">צוות טעמים</p>
+
+  <div class="collab">
+    <span>בשיתוף פעולה עם רשת אמי"ת</span>
+    <img src="assets/amit-logo-white.png" alt="רשת אמי"ת">
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
-    new QRCode(document.getElementById('qr'), { text: 'https://taamim-audio.github.io/pilot/', width: 240, height: 240, correctLevel: QRCode.CorrectLevel.M });
+    new QRCode(document.getElementById('qr'), { text: 'https://taamim-audio.github.io/pilot/', width: 230, height: 230, correctLevel: QRCode.CorrectLevel.M });
   </script>
 </body>
 </html>
