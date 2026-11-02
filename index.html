@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>טעמים — פיילוט לתלמידים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script defer src="app.js?v=1"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-badge">טעמים</div>
+    <h1>לומדים לקרוא בתורה בכיף</h1>
+    <p class="subtitle">פיילוט חינם לתלמידות ותלמידים</p>
+  </div>
+</header>
+
+<!-- ===== תצוגת נרשם ===== -->
+<main id="view-apply" class="container">
+
+  <section class="card intro">
+    <h2>מה זה טעמים?</h2>
+    <p>אפליקציית טעמים הופכת את הלימוד לקריאה בתורה לכיף אמיתי: משחקים, אנימציות ונקודות ממתקים שאוספים תוך כדי — והכול בחיבור בין המורה לתלמיד.</p>
+    <p>וזה רק מתחיל: במהלך הפיילוט נוסיף עוד ועוד תוספות מגניבות, אז מי שמצטרף עכשיו מקבל חוויה שרק משתפרת עם הזמן.</p>
+    <div class="tips">
+      <h3>איך מצטרפים?</h3>
+      <ul>
+        <li>נרשמים כאן בטופס — <strong>בחינם ובלי שום התחייבות</strong></li>
+        <li>אנחנו שולחים אליכם דוא״ל עם קישור להורדת האפליקציה</li>
+        <li>מתחילים לשחק וללמוד. לא מתאים? תמיד אפשר למחוק</li>
+      </ul>
+      <p class="hint">בעתיד האפליקציה תהיה בתשלום — ההשתתפות בפיילוט היא בחינם.</p>
+    </div>
+  </section>
+
+  <form id="apply-form" class="card" novalidate>
+    <h2>טופס הרשמה לפיילוט</h2>
+
+    <label>שם פרטי (לא חובה)
+      <input type="text" name="first_name" autocomplete="given-name">
+    </label>
+
+    <label>בית ספר ועיר (לא חובה)
+      <input type="text" name="school_city" placeholder="למשל: אמית, מודיעין">
+    </label>
+
+    <label>כיתה (לא חובה)
+      <select name="grade">
+        <option value="">בחרו…</option>
+        <option>ז</option>
+        <option>ח</option>
+        <option>ט</option>
+        <option>אחר</option>
+      </select>
+    </label>
+
+    <label>כתובת דוא״ל ליצירת קשר <span class="req">*</span>
+      <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" style="direction:ltr; text-align:right">
+    </label>
+    <p class="hint">אין לך כתובת דוא״ל משלך? אפשר לרשום את הדוא״ל של הורה, מורה, רב או סבא/סבתא — אנחנו נשלח אליהם את הקישור.</p>
+
+    <label>של מי כתובת הדוא״ל? <span class="req">*</span>
+      <select name="email_owner" required>
+        <option value="">בחרו…</option>
+        <option>שלי</option>
+        <option>של הורה</option>
+        <option>של מורה</option>
+        <option>של רב</option>
+        <option>של סבא או סבתא</option>
+        <option>אחר</option>
+      </select>
+    </label>
+
+    <div id="form-error" class="error" hidden></div>
+    <div class="consent-box">
+      <p>הפרטים יישמרו אצל צוות טעמים וישמשו רק ליצירת קשר לגבי הפיילוט — לא לשום מטרה אחרת. אם אני מתחת לגיל 18, ההורה או האחראי שלי יודע על ההרשמה ומסכים לה.</p>
+      <label class="consent-check"><input type="checkbox" id="consent-check"> קראתי ואני מסכים/ה</label>
+    </div>
+    <button type="submit" class="btn btn-primary" id="submit-btn">נרשמים לפיילוט</button>
+  </form>
+
+  <section id="apply-success" class="card success" hidden>
+    <div class="check">✓</div>
+    <h2>נרשמת בהצלחה!</h2>
+    <p>תודה! אנחנו נשלח אליך דוא״ל עם קישור להורדת האפליקציה. שווה לבדוק גם בתיקיית הספאם.</p>
+  </section>
+</main>
+
+<!-- ===== תצוגת ניהול (צוות) ===== -->
+<main id="view-admin" class="container" hidden>
+
+  <section id="admin-gate" class="card gate">
+    <h2>כניסת צוות בלבד</h2>
+    <p class="hint">הגישה מיועדת לצוות טעמים בלבד. מזינים דוא״ל ומבקשים קישור כניסה — בלי סיסמה.</p>
+    <p class="hint" id="app-version" style="opacity:.55; font-size:.8em;"></p>
+    <label>דוא״ל
+      <input type="email" id="admin-email" autocomplete="email" placeholder="you@example.com">
+    </label>
+    <div id="gate-error" class="error" hidden></div>
+    <div id="gate-msg" class="hint" hidden></div>
+    <div class="gate-actions">
+      <button class="btn btn-primary" id="magic-btn">שליחת קישור כניסה לדוא״ל</button>
+    </div>
+  </section>
+
+  <section id="admin-panel" hidden>
+    <div class="card admin-head">
+      <h2>ניהול נרשמים לפיילוט</h2>
+      <div class="stats" id="stats"></div>
+      <div class="admin-actions">
+        <button class="btn btn-green" id="export-xlsx">ייצוא לאקסל</button>
+        <input type="search" id="search" placeholder="חיפוש לפי שם, בית ספר, דוא״ל…">
+        <button class="btn btn-soft" id="signout-btn">יציאה</button>
+      </div>
+    </div>
+    <div id="apps-list"></div>
+    <p id="empty-state" class="hint" hidden>אין נרשמים עדיין.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <a href="#admin" id="team-link">כניסת צוות</a>
+  <p>© צוות טעמים — כל הזכויות שמורות. אין לעשות שימוש ללא אישור בכתב.</p>
+</footer>
+
+</body>
+</html>
