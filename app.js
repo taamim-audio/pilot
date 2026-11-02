@@ -3,6 +3,7 @@
 const SUPABASE_URL = 'https://gpipsjqkntcyczoxnnwa.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9zCWAwdh5h1euDJ67i0LuA_nSM9iW_Y';
 const APP_VERSION = '1';
+const TABLE = new URLSearchParams(location.search).has('admintest') ? 'pilot_registrations_test' : 'pilot_registrations';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit' } });
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
 const OTHER = 'אחר';
@@ -54,9 +55,9 @@ async function submitForm(ev) {
   document.getElementById('form-error').hidden = true;
 
   if (!f.elements.email.value.trim() || !f.elements.email.checkValidity()) {
-    showError('חסרה כתובת דוא״ל תקינה — אליה נשלח את הקישור לאפליקציה.'); return;
+    showError('חסרה כתובת דוא"ל תקינה — אליה נשלח את הקישור לאפליקציה.'); return;
   }
-  if (!f.elements.email_owner.value) { showError('בחרו של מי כתובת הדוא״ל.'); return; }
+  if (!f.elements.email_owner.value) { showError('בחרו של מי כתובת הדוא"ל.'); return; }
   for (const sel of f.querySelectorAll('select')) {
     if (sel.value === OTHER) {
       const t = (sel.closest('label') || sel.parentElement).querySelector('.other-text');
@@ -70,7 +71,7 @@ async function submitForm(ev) {
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'שולח…';
   try {
-    const ins = await sb.from('pilot_registrations').insert({
+    const ins = await sb.from(TABLE).insert({
       first_name: f.elements.first_name.value.trim() || null,
       school_city: f.elements.school_city.value.trim() || null,
       grade: f.elements.grade.value || null,
@@ -105,7 +106,7 @@ async function sendMagicLink() {
   const msg = document.getElementById('gate-msg');
   const err = document.getElementById('gate-error');
   err.hidden = true; msg.hidden = true;
-  if (!email) { err.textContent = 'מלאו דוא״ל ואז בקשו קישור.'; err.hidden = false; return; }
+  if (!email) { err.textContent = 'מלאו דוא"ל ואז בקשו קישור.'; err.hidden = false; return; }
   const redirectTo = window.location.origin + window.location.pathname + '?auth=1';
   const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: redirectTo } });
   if (error) {
@@ -119,7 +120,7 @@ async function sendMagicLink() {
     }
     err.hidden = false; return;
   }
-  msg.textContent = 'נשלח קישור כניסה לדוא״ל. לוחצים עליו — וחוזרים לכאן מחוברים.';
+  msg.textContent = 'נשלח קישור כניסה לדוא"ל. לוחצים עליו — וחוזרים לכאן מחוברים.';
   msg.hidden = false;
 }
 async function signOut() {
@@ -171,7 +172,7 @@ function renderApps(filter) {
       '<span class="app-date">' + fmtDate(a.created_at) + '</span></div>' +
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
-      field('דוא״ל', a.email) + field('דוא״ל של', a.email_owner) +
+      field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) +
       field('בית ספר ועיר', a.school_city) + field('כיתה', a.grade) +
       '</div>' +
       '<div class="status-row"><b>סטטוס:</b><select class="status-select">' + statusOpts + '</select></div>' +
@@ -181,19 +182,19 @@ function renderApps(filter) {
       '<button class="btn btn-danger del-btn">מחיקת רשומה</button>' +
       '</div>';
     card.querySelector('.status-select').addEventListener('change', async ev => {
-      const r = await sb.from('pilot_registrations').update({ status: ev.target.value }).eq('public_id', a.public_id);
+      const r = await sb.from(TABLE).update({ status: ev.target.value }).eq('public_id', a.public_id);
       if (r.error) alert('עדכון הסטטוס נכשל: ' + r.error.message);
       refreshAdminList();
     });
     card.querySelector('.notes-save').addEventListener('click', async () => {
-      const r = await sb.from('pilot_registrations')
+      const r = await sb.from(TABLE)
         .update({ reviewer_notes: card.querySelector('.notes-area').value }).eq('public_id', a.public_id);
       if (r.error) alert('שמירת ההערות נכשלה: ' + r.error.message);
       refreshAdminList();
     });
     card.querySelector('.del-btn').addEventListener('click', async () => {
       if (!confirm('למחוק את הרשומה של ' + (a.first_name || a.email) + '?')) return;
-      const r = await sb.from('pilot_registrations').delete().eq('public_id', a.public_id);
+      const r = await sb.from(TABLE).delete().eq('public_id', a.public_id);
       if (r.error) alert('המחיקה נכשלה: ' + r.error.message);
       refreshAdminList();
     });
