@@ -63,6 +63,7 @@ async function submitForm(ev) {
   if (!f.elements.email.value.trim() || !f.elements.email.checkValidity()) {
     showError('חסרה כתובת דוא"ל תקינה — אליה נשלח את הקישור לאפליקציה.'); return;
   }
+  if (!f.elements.device_type.value) { showError('בחרו את סוג המכשיר שעליו תותקן האפליקציה.'); return; }
   if (!f.elements.email_owner.value) { showError('בחרו של מי כתובת הדוא"ל.'); return; }
   for (const sel of f.querySelectorAll('select')) {
     if (sel.value === OTHER) {
@@ -83,6 +84,7 @@ async function submitForm(ev) {
       school_city: noSchool ? null : f.elements.school_city.value.trim(),
       no_school: noSchool,
       grade: f.elements.grade.value || null,
+      device_type: selectFinalValue(f.elements.device_type),
       email: f.elements.email.value.trim(),
       email_owner: selectFinalValue(f.elements.email_owner)
     });
@@ -173,7 +175,7 @@ function renderApps(filter) {
   list.innerHTML = '';
   const q = (filter || '').toLowerCase();
   const shown = adminApps.filter(a =>
-    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.email, a.email_owner, a.status]
+    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.status]
       .some(v => (v || '').toLowerCase().includes(q)));
   document.getElementById('empty-state').hidden = shown.length > 0;
 
@@ -187,7 +189,7 @@ function renderApps(filter) {
       '<span class="app-date">' + fmtDate(a.created_at) + '</span></div>' +
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
-      field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) +
+      field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) + field('מכשיר', a.device_type) +
       field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) +
       '</div>' +
       '<div class="status-row"><b>סטטוס:</b><select class="status-select">' + statusOpts + '</select></div>' +
