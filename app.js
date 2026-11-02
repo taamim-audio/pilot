@@ -54,6 +54,12 @@ async function submitForm(ev) {
   const f = ev.target;
   document.getElementById('form-error').hidden = true;
 
+  if (!f.elements.first_name.value.trim()) { showError('חסר שם פרטי.'); return; }
+  if (!f.elements.last_name.value.trim()) { showError('חסר שם משפחה.'); return; }
+  const noSchool = document.getElementById('no-school').checked;
+  if (!noSchool && !f.elements.school_city.value.trim()) {
+    showError('חסרים בית ספר ועיר של התלמיד/ה — או סמנו שהתלמיד/ה לא לומד/ת בבית ספר כרגע.'); return;
+  }
   if (!f.elements.email.value.trim() || !f.elements.email.checkValidity()) {
     showError('חסרה כתובת דוא"ל תקינה — אליה נשלח את הקישור לאפליקציה.'); return;
   }
@@ -72,8 +78,10 @@ async function submitForm(ev) {
   btn.disabled = true; btn.textContent = 'שולח…';
   try {
     const ins = await sb.from(TABLE).insert({
-      first_name: f.elements.first_name.value.trim() || null,
-      school_city: f.elements.school_city.value.trim() || null,
+      first_name: f.elements.first_name.value.trim(),
+      last_name: f.elements.last_name.value.trim(),
+      school_city: noSchool ? null : f.elements.school_city.value.trim(),
+      no_school: noSchool,
       grade: f.elements.grade.value || null,
       email: f.elements.email.value.trim(),
       email_owner: selectFinalValue(f.elements.email_owner)
@@ -91,6 +99,13 @@ async function submitForm(ev) {
     btn.disabled = false; btn.textContent = 'נרשמים לפיילוט';
   }
 }
+
+/* ---------- צ'קבוקס "לא לומד בבית ספר" ---------- */
+document.getElementById('no-school').addEventListener('change', ev => {
+  const sc = document.getElementById('school-city');
+  sc.disabled = ev.target.checked;
+  if (ev.target.checked) sc.value = '';
+});
 
 /* ---------- מסך ניהול ---------- */
 let adminApps = [];
@@ -158,7 +173,7 @@ function renderApps(filter) {
   list.innerHTML = '';
   const q = (filter || '').toLowerCase();
   const shown = adminApps.filter(a =>
-    !q || [a.first_name, a.school_city, a.grade, a.email, a.email_owner, a.status]
+    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.email, a.email_owner, a.status]
       .some(v => (v || '').toLowerCase().includes(q)));
   document.getElementById('empty-state').hidden = shown.length > 0;
 
@@ -168,12 +183,12 @@ function renderApps(filter) {
     const statusOpts = STATUSES.map(s =>
       '<option' + (s === a.status ? ' selected' : '') + '>' + s + '</option>').join('');
     card.innerHTML =
-      '<div class="app-head"><h3>' + esc(a.first_name || '(ללא שם)') + '</h3>' +
+      '<div class="app-head"><h3>' + esc(((a.first_name || '') + ' ' + (a.last_name || '')).trim() || '(ללא שם)') + '</h3>' +
       '<span class="app-date">' + fmtDate(a.created_at) + '</span></div>' +
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
       field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) +
-      field('בית ספר ועיר', a.school_city) + field('כיתה', a.grade) +
+      field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) +
       '</div>' +
       '<div class="status-row"><b>סטטוס:</b><select class="status-select">' + statusOpts + '</select></div>' +
       '<textarea class="notes-area" rows="2" placeholder="הערות צוות (לא גלוי לנרשם)">' + esc(a.reviewer_notes || '') + '</textarea>' +
