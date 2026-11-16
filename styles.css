@@ -14,10 +14,21 @@ body{
   display:flex;flex-direction:column;
 }
 .site-header{
+  position:relative;
   background:linear-gradient(180deg,var(--sky1),var(--sky2));
   border-bottom:4px solid var(--gold);
   padding:34px 16px 28px;
   text-align:center;
+}
+.amit-badge{
+  position:absolute;
+  top:14px;
+  right:16px;
+  height:64px;
+  width:auto;
+}
+@media(max-width:560px){
+  .amit-badge{height:44px;top:10px;right:10px}
 }
 .header-inner{max-width:720px;margin:0 auto}
 .logo-badge{font-size:44px;line-height:1;margin-bottom:10px}
