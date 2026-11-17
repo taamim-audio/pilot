@@ -212,3 +212,12 @@ fieldset.samples legend{font-weight:800;padding:0 8px}
 .st-נוצר-קשר{background:var(--sky2)}
 .st-נשלח-קישור{background:var(--lilac);color:var(--purple)}
 .st-הושלם{background:#c9ecca;color:#2e6b2e}
+
+/* Live, keyboard-accessible parasha suggestions */
+.parasha-field{position:relative;margin-bottom:14px}
+.parasha-field label{margin-bottom:0}
+.parasha-field .hint{margin-top:6px}
+#parasha-options{position:absolute;z-index:5;top:79px;inset-inline:0;list-style:none;max-height:240px;overflow-y:auto;background:#fff;border:2px solid var(--gold-outline);border-radius:12px;box-shadow:0 6px 16px #37474f26;padding:4px}
+#parasha-options li{padding:9px 12px;cursor:pointer;border-radius:8px;font-weight:600;text-align:right}
+#parasha-options li:hover,#parasha-options li[aria-selected="true"]{background:var(--gold-light)}
+[hidden]{display:none!important}

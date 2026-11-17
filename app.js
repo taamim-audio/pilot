@@ -32,7 +32,8 @@ function wireOtherField(select) {
   const t = document.createElement('input');
   t.type = 'text';
   t.className = 'other-text';
-  t.placeholder = 'פירוט (חובה בבחירת "אחר")';
+  t.placeholder = select.name === 'nusach' ? 'למשל: אתיופי' : 'פירוט (חובה בבחירת "אחר")';
+  t.setAttribute('aria-label', select.name === 'nusach' ? 'פירוט נוסח אחר' : 'פירוט אחר');
   t.hidden = true;
   const label = select.closest('label') || select.parentElement;
   label.appendChild(t);
@@ -64,6 +65,8 @@ async function submitForm(ev) {
     showError('חסרה כתובת דוא"ל תקינה — אליה נשלח את הקישור לאפליקציה.'); return;
   }
   if (!f.elements.device_type.value) { showError('בחרו את סוג המכשיר שעליו תותקן האפליקציה.'); return; }
+  if (!f.elements.nusach.value) { showError('בחרו את נוסח הקריאה.'); return; }
+  if (!f.elements.parasha.value.trim()) { showError('כתבו איזו פרשה קוראים.'); return; }
   if (!f.elements.email_owner.value) { showError('בחרו של מי כתובת הדוא"ל.'); return; }
   for (const sel of f.querySelectorAll('select')) {
     if (sel.value === OTHER) {
@@ -86,7 +89,9 @@ async function submitForm(ev) {
       grade: f.elements.grade.value || null,
       device_type: selectFinalValue(f.elements.device_type),
       email: f.elements.email.value.trim(),
-      email_owner: selectFinalValue(f.elements.email_owner)
+      email_owner: selectFinalValue(f.elements.email_owner),
+      nusach: selectFinalValue(f.elements.nusach),
+      parasha: f.elements.parasha.value.trim()
     });
     if (ins.error) throw new Error('insert: ' + ins.error.message);
     f.reset();
@@ -175,7 +180,7 @@ function renderApps(filter) {
   list.innerHTML = '';
   const q = (filter || '').toLowerCase();
   const shown = adminApps.filter(a =>
-    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.status]
+    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.nusach, a.parasha, a.status]
       .some(v => (v || '').toLowerCase().includes(q)));
   document.getElementById('empty-state').hidden = shown.length > 0;
 
@@ -190,7 +195,7 @@ function renderApps(filter) {
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
       field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) + field('מכשיר', a.device_type) +
-      field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) +
+      field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) + field('נוסח', a.nusach) + field('פרשה', a.parasha) +
       '</div>' +
       '<div class="status-row"><b>סטטוס:</b><select class="status-select">' + statusOpts + '</select></div>' +
       '<textarea class="notes-area" rows="2" placeholder="הערות צוות (לא גלוי לנרשם)">' + esc(a.reviewer_notes || '') + '</textarea>' +
@@ -223,10 +228,10 @@ function renderApps(filter) {
 function exportXlsx() {
   if (!adminApps.length) { alert('אין נרשמים לייצוא.'); return null; }
   const headers = ['שם פרטי', 'בית ספר ועיר', 'כיתה', 'דוא"ל', 'דוא"ל של',
-    'סטטוס', 'הערות צוות', 'תאריך הרשמה'];
+    'נוסח', 'פרשה', 'סטטוס', 'הערות צוות', 'תאריך הרשמה'];
   const rows = adminApps.map(a => [
     a.first_name || '', a.school_city || '', a.grade || '', a.email, a.email_owner,
-    a.status, a.reviewer_notes || '',
+    a.nusach || '', a.parasha || '', a.status, a.reviewer_notes || '',
     new Date(a.created_at).toLocaleString('he-IL')
   ]);
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
@@ -252,6 +257,7 @@ function route() {
 /* ---------- אתחול ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#apply-form select').forEach(wireOtherField);
+  wireParashaAutocomplete();
   document.getElementById('apply-form').addEventListener('submit', submitForm);
   document.getElementById('magic-btn').addEventListener('click', sendMagicLink);
   const vb = document.getElementById('app-version');
@@ -267,3 +273,48 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   route();
 });
+
+const PARASHOT = ["בראשית", "נח", "לך לך", "וירא", "חיי שרה", "תולדות", "ויצא", "וישלח", "וישב", "מקץ", "ויגש", "ויחי", "שמות", "וארא", "בא", "בשלח", "יתרו", "משפטים", "תרומה", "תצוה", "כי תשא", "ויקהל", "פקודי", "ויקרא", "צו", "שמיני", "תזריע", "מצורע", "אחרי מות", "קדושים", "אמור", "בהר", "בחקתי", "במדבר", "נשא", "בהעלתך", "שלח", "קרח", "חקת", "בלק", "פינחס", "מטות", "מסעי", "דברים", "ואתחנן", "עקב", "ראה", "שופטים", "כי תצא", "כי תבוא", "נצבים", "וילך", "האזינו", "וזאת הברכה"];
+
+function normalizeParasha(value) {
+  return value.normalize('NFD').replace(/[֑-ׇ]/g, '').replace(/[\s־-]+/g, '').trim();
+}
+function wireParashaAutocomplete() {
+  const input = document.getElementById('parasha');
+  const list = document.getElementById('parasha-options');
+  let active = -1;
+  function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); active = -1; }
+  function choose(value) { input.value = value; close(); input.focus(); }
+  function highlight(index) {
+    const items = [...list.children];
+    if (!items.length) return;
+    active = (index + items.length) % items.length;
+    items.forEach((item, i) => item.setAttribute('aria-selected', String(i === active)));
+    input.setAttribute('aria-activedescendant', items[active].id);
+    items[active].scrollIntoView({ block: 'nearest' });
+  }
+  function update() {
+    const query = normalizeParasha(input.value);
+    list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
+    const aliases = { 'תולדות': ['תולדת'], 'תצוה': ['תצווה'], 'בחקתי': ['בחוקותי'], 'בהעלתך': ['בהעלותך'], 'שלח': ['שלח לך'], 'קרח': ['קורח'], 'חקת': ['חוקת'], 'פינחס': ['פנחס'], 'נצבים': ['ניצבים'] };
+    const matches = query ? PARASHOT.filter(name => [name, ...(aliases[name] || [])].some(value => normalizeParasha(value).startsWith(query))) : [];
+    matches.forEach((name, i) => {
+      const item = document.createElement('li');
+      item.id = 'parasha-option-' + i; item.setAttribute('role', 'option'); item.setAttribute('aria-selected', 'false'); item.textContent = name;
+      item.addEventListener('mousedown', e => e.preventDefault());
+      item.addEventListener('click', () => choose(name)); list.appendChild(item);
+    });
+    list.hidden = !matches.length; input.setAttribute('aria-expanded', String(!!matches.length));
+  }
+  input.addEventListener('input', update);
+  input.addEventListener('focus', update);
+  input.addEventListener('blur', close);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (list.hidden) update();
+      if (!list.hidden) { e.preventDefault(); highlight(active < 0 ? (e.key === 'ArrowDown' ? 0 : list.children.length - 1) : active + (e.key === 'ArrowDown' ? 1 : -1)); }
+    } else if (e.key === 'Enter' && !list.hidden && active >= 0) { e.preventDefault(); choose(list.children[active].textContent); }
+  });
+  input.form.addEventListener('reset', close);
+}

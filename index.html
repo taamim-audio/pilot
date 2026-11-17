@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="styles.css?v=8">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script defer src="app.js?v=8"></script>
+<script defer src="app.js?v=9"></script>
 </head>
 <body>
 
@@ -66,6 +66,23 @@
         <option>אחר</option>
       </select>
     </label>
+
+    <label>באיזה נוסח קוראים? <span class="req">*</span>
+      <select name="nusach" required>
+        <option value="">בחרו…</option>
+        <option>אשכנז</option><option>ספרדי</option><option>ירושלמי</option>
+        <option>מרוקאי</option><option>תוניסאי</option><option>תימני</option><option>אחר</option>
+      </select>
+    </label>
+
+    <div class="parasha-field">
+      <label for="parasha">איזו פרשה קוראים? <span class="req">*</span></label>
+      <input type="text" id="parasha" name="parasha" required autocomplete="off"
+        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="parasha-options"
+        placeholder="התחילו להקליד שם פרשה">
+      <ul id="parasha-options" role="listbox" aria-label="הצעות לפרשה" hidden></ul>
+      <p class="hint">אפשר לבחור הצעה או לכתוב את שם הפרשה בעצמכם.</p>
+    </div>
 
     <label>סוג המכשיר שעליו תותקן האפליקציה <span class="req">*</span>
       <select name="device_type" required>
