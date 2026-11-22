@@ -2,7 +2,7 @@
 /* טעמים — הרשמה לפיילוט תלמידים. Backend: Supabase (anon insert-only; team reads via sign-in). */
 const SUPABASE_URL = 'https://gpipsjqkntcyczoxnnwa.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9zCWAwdh5h1euDJ67i0LuA_nSM9iW_Y';
-const APP_VERSION = '2';
+const APP_VERSION = '3';
 const TABLE = 'pilot_registrations';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit' } });
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
@@ -99,7 +99,8 @@ async function submitForm(ev) {
       email_owner: selectFinalValue(f.elements.email_owner),
       nusach: selectFinalValue(f.elements.nusach),
       parasha: f.elements.parasha.value.trim(),
-      source: SOURCE
+      source: SOURCE,
+      age: f.elements.age.value ? parseInt(f.elements.age.value, 10) : null
     });
     if (ins.error) throw new Error('insert: ' + ins.error.message);
     f.reset();
@@ -203,7 +204,7 @@ function renderApps(filter) {
   const q = (filter || '').toLowerCase();
   const shown = adminApps.filter(a =>
     (sourceFilter === 'all' || sourceValue(a) === sourceFilter) &&
-    (!q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.nusach, a.parasha, a.status, sourceLabel(a.source)]
+    (!q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.nusach, a.parasha, a.status, sourceLabel(a.source), String(a.age == null ? '' : a.age)]
       .some(v => (v || '').toLowerCase().includes(q))));
   document.getElementById('empty-state').hidden = shown.length > 0;
 
@@ -219,7 +220,7 @@ function renderApps(filter) {
       '<span class="status-chip source-chip">' + esc(sourceLabel(a.source)) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
       field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) + field('מכשיר', a.device_type) +
-      field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) + field('נוסח', a.nusach) + field('פרשה', a.parasha) +
+      field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) + field('גיל', a.age) + field('נוסח', a.nusach) + field('פרשה', a.parasha) +
       '</div>' +
       '<div class="status-row"><b>סטטוס:</b><select class="status-select">' + statusOpts + '</select></div>' +
       '<textarea class="notes-area" rows="2" placeholder="הערות צוות (לא גלוי לנרשם)">' + esc(a.reviewer_notes || '') + '</textarea>' +
@@ -251,10 +252,10 @@ function renderApps(filter) {
 /* ---------- ייצוא ---------- */
 function exportXlsx() {
   if (!adminApps.length) { alert('אין נרשמים לייצוא.'); return null; }
-  const headers = ['שם פרטי', 'בית ספר ועיר', 'כיתה', 'דוא"ל', 'דוא"ל של',
+  const headers = ['שם פרטי', 'בית ספר ועיר', 'כיתה', 'גיל', 'דוא"ל', 'דוא"ל של',
     'נוסח', 'פרשה', 'סטטוס', 'הערות צוות', 'מקור', 'תאריך הרשמה'];
   const rows = adminApps.map(a => [
-    a.first_name || '', a.school_city || '', a.grade || '', a.email, a.email_owner,
+    a.first_name || '', a.school_city || '', a.grade || '', a.age == null ? '' : a.age, a.email, a.email_owner,
     a.nusach || '', a.parasha || '', a.status, a.reviewer_notes || '',
     sourceExportLabel(a.source),
     new Date(a.created_at).toLocaleString('he-IL')
