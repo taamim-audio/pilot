@@ -2,7 +2,7 @@
 /* טעמים — הרשמה לפיילוט תלמידים. Backend: Supabase (anon insert-only; team reads via sign-in). */
 const SUPABASE_URL = 'https://gpipsjqkntcyczoxnnwa.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9zCWAwdh5h1euDJ67i0LuA_nSM9iW_Y';
-const APP_VERSION = '3';
+const APP_VERSION = '4';
 const TABLE = 'pilot_registrations';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit' } });
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
