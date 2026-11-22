@@ -8,8 +8,8 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { fl
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
 const OTHER = 'אחר';
 const SOURCE = 'pilot'; // ערך שמוזן לעמודת source בכל הרשמה מהעמוד הזה
-const SOURCE_LABELS = { 'pilot': 'קישור עמית', 'pilot-ba': 'בני עקיבא' };
-const SOURCE_EXPORT_LABELS = { 'pilot': 'קישור עמית (pilot)', 'pilot-ba': 'בני עקיבא (pilot-ba)' };
+const SOURCE_LABELS = { 'pilot': 'קישור אמית', 'pilot-ba': 'בני עקיבא' };
+const SOURCE_EXPORT_LABELS = { 'pilot': 'קישור אמית (pilot)', 'pilot-ba': 'בני עקיבא (pilot-ba)' };
 function sourceLabel(v) { return SOURCE_LABELS[v] || SOURCE_LABELS['pilot']; }
 function sourceExportLabel(v) { return SOURCE_EXPORT_LABELS[v] || SOURCE_EXPORT_LABELS['pilot']; }
 function sourceValue(a) { return a.source || 'pilot'; }
@@ -173,7 +173,7 @@ async function refreshAdminList() {
   renderApps(document.getElementById('search').value.trim());
 }
 function renderSourceFilters() {
-  const defs = [['all', 'הכול'], ['pilot', 'קישור עמית'], ['pilot-ba', 'בני עקיבא']];
+  const defs = [['all', 'הכול'], ['pilot', 'קישור אמית'], ['pilot-ba', 'בני עקיבא']];
   const counts = { all: adminApps.length };
   adminApps.forEach(a => { const s = sourceValue(a); counts[s] = (counts[s] || 0) + 1; });
   document.getElementById('source-filters').innerHTML = defs.map(([v, l]) =>
