@@ -74,7 +74,7 @@
     <label>באיזה נוסח קוראים? <span class="req">*</span>
       <select name="nusach" required>
         <option value="">בחרו…</option>
-        <option>אשכנז</option><option>ספרדי</option><option>ירושלמי</option>
+        <option>אשכנז</option><option>ספרדי ירושלמי</option>
         <option>מרוקאי</option><option>תוניסאי</option><option>תימני</option><option>אחר</option>
       </select>
     </label>
@@ -114,6 +114,11 @@
         <option>אחר</option>
       </select>
     </label>
+
+    <label>טלפון (לא חובה)
+      <input type="tel" name="phone" id="phone" autocomplete="tel" placeholder="למשל: 050-1234567" style="direction:ltr; text-align:right">
+    </label>
+    <p class="hint">הפרטים נשארים אצלנו בלבד. איננו מעבירים מספרי טלפון לאף גורם, והכול חסוי.</p>
 
     <div id="form-error" class="error" hidden></div>
     <div class="consent-box">
