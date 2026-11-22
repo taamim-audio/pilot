@@ -223,3 +223,7 @@ fieldset.samples legend{font-weight:800;padding:0 8px}
 [hidden]{display:none!important}
 .source-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .source-chip{background:#E3F2FD;color:#1565C0;margin-inline-start:6px}
+.app-top{cursor:pointer;position:relative}
+.app-top:hover{opacity:.85}
+.collapse-caret{position:absolute;left:6px;top:2px;font-size:1rem;opacity:.55}
+.app-body{margin-top:10px}

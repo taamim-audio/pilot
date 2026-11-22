@@ -2,7 +2,7 @@
 /* טעמים — הרשמה לפיילוט תלמידים. Backend: Supabase (anon insert-only; team reads via sign-in). */
 const SUPABASE_URL = 'https://gpipsjqkntcyczoxnnwa.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9zCWAwdh5h1euDJ67i0LuA_nSM9iW_Y';
-const APP_VERSION = '5';
+const APP_VERSION = '6';
 const TABLE = 'pilot_registrations';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit' } });
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
@@ -215,10 +215,14 @@ function renderApps(filter) {
     const statusOpts = STATUSES.map(s =>
       '<option' + (s === a.status ? ' selected' : '') + '>' + s + '</option>').join('');
     card.innerHTML =
+      '<div class="app-top">' +
       '<div class="app-head"><h3>' + esc(((a.first_name || '') + ' ' + (a.last_name || '')).trim() || '(ללא שם)') + '</h3>' +
       '<span class="app-date">' + fmtDate(a.created_at) + '</span></div>' +
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
       '<span class="status-chip source-chip">' + esc(sourceLabel(a.source)) + '</span>' +
+      '<span class="collapse-caret">▾</span>' +
+      '</div>' +
+      '<div class="app-body" hidden>' +
       '<div class="fields" style="margin-top:10px">' +
       field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) + field('טלפון', a.phone) + field('מכשיר', a.device_type) +
       field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) + field('גיל', a.age) + field('נוסח', a.nusach) + field('פרשה', a.parasha) +
@@ -228,7 +232,14 @@ function renderApps(filter) {
       '<div class="app-actions">' +
       '<button class="btn btn-soft notes-save">שמירת הערות</button>' +
       '<button class="btn btn-danger del-btn">מחיקת רשומה</button>' +
+      '</div>' +
       '</div>';
+    const body = card.querySelector('.app-body');
+    const caret = card.querySelector('.collapse-caret');
+    card.querySelector('.app-top').addEventListener('click', () => {
+      body.hidden = !body.hidden;
+      caret.textContent = body.hidden ? '▾' : '▴';
+    });
     card.querySelector('.status-select').addEventListener('change', async ev => {
       const r = await sb.from(TABLE).update({ status: ev.target.value }).eq('public_id', a.public_id);
       if (r.error) alert('עדכון הסטטוס נכשל: ' + r.error.message);
