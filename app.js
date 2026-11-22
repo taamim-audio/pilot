@@ -2,11 +2,18 @@
 /* טעמים — הרשמה לפיילוט תלמידים. Backend: Supabase (anon insert-only; team reads via sign-in). */
 const SUPABASE_URL = 'https://gpipsjqkntcyczoxnnwa.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9zCWAwdh5h1euDJ67i0LuA_nSM9iW_Y';
-const APP_VERSION = '1';
+const APP_VERSION = '2';
 const TABLE = 'pilot_registrations';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit' } });
 const STATUSES = ['חדש', 'נוצר קשר', 'נשלח קישור', 'הושלם'];
 const OTHER = 'אחר';
+const SOURCE = 'pilot'; // ערך שמוזן לעמודת source בכל הרשמה מהעמוד הזה
+const SOURCE_LABELS = { 'pilot': 'קישור עמית', 'pilot-ba': 'בני עקיבא' };
+const SOURCE_EXPORT_LABELS = { 'pilot': 'קישור עמית (pilot)', 'pilot-ba': 'בני עקיבא (pilot-ba)' };
+function sourceLabel(v) { return SOURCE_LABELS[v] || SOURCE_LABELS['pilot']; }
+function sourceExportLabel(v) { return SOURCE_EXPORT_LABELS[v] || SOURCE_EXPORT_LABELS['pilot']; }
+function sourceValue(a) { return a.source || 'pilot'; }
+let sourceFilter = 'all';
 
 /* ---------- עזר ---------- */
 function esc(s) {
@@ -91,7 +98,8 @@ async function submitForm(ev) {
       email: f.elements.email.value.trim(),
       email_owner: selectFinalValue(f.elements.email_owner),
       nusach: selectFinalValue(f.elements.nusach),
-      parasha: f.elements.parasha.value.trim()
+      parasha: f.elements.parasha.value.trim(),
+      source: SOURCE
     });
     if (ins.error) throw new Error('insert: ' + ins.error.message);
     f.reset();
@@ -161,7 +169,21 @@ async function refreshAdminList() {
   }
   adminApps = data || [];
   renderStats();
+  renderSourceFilters();
   renderApps(document.getElementById('search').value.trim());
+}
+function renderSourceFilters() {
+  const defs = [['all', 'הכול'], ['pilot', 'קישור עמית'], ['pilot-ba', 'בני עקיבא']];
+  const counts = { all: adminApps.length };
+  adminApps.forEach(a => { const s = sourceValue(a); counts[s] = (counts[s] || 0) + 1; });
+  document.getElementById('source-filters').innerHTML = defs.map(([v, l]) =>
+    '<button class="btn ' + (sourceFilter === v ? 'btn-primary' : 'btn-soft') + ' source-filter" data-v="' + v + '">' +
+    esc(l) + ' (' + (counts[v] || 0) + ')</button>').join(' ');
+  document.querySelectorAll('.source-filter').forEach(b => b.addEventListener('click', () => {
+    sourceFilter = b.dataset.v;
+    renderSourceFilters();
+    renderApps(document.getElementById('search').value.trim());
+  }));
 }
 function renderStats() {
   const byStatus = {};
@@ -180,8 +202,9 @@ function renderApps(filter) {
   list.innerHTML = '';
   const q = (filter || '').toLowerCase();
   const shown = adminApps.filter(a =>
-    !q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.nusach, a.parasha, a.status]
-      .some(v => (v || '').toLowerCase().includes(q)));
+    (sourceFilter === 'all' || sourceValue(a) === sourceFilter) &&
+    (!q || [a.first_name, a.last_name, a.school_city, a.grade, a.device_type, a.email, a.email_owner, a.nusach, a.parasha, a.status, sourceLabel(a.source)]
+      .some(v => (v || '').toLowerCase().includes(q))));
   document.getElementById('empty-state').hidden = shown.length > 0;
 
   for (const a of shown) {
@@ -193,6 +216,7 @@ function renderApps(filter) {
       '<div class="app-head"><h3>' + esc(((a.first_name || '') + ' ' + (a.last_name || '')).trim() || '(ללא שם)') + '</h3>' +
       '<span class="app-date">' + fmtDate(a.created_at) + '</span></div>' +
       '<span class="status-chip ' + statusClass(a.status) + '">' + esc(a.status) + '</span>' +
+      '<span class="status-chip source-chip">' + esc(sourceLabel(a.source)) + '</span>' +
       '<div class="fields" style="margin-top:10px">' +
       field('דוא"ל', a.email) + field('דוא"ל של', a.email_owner) + field('מכשיר', a.device_type) +
       field('בית ספר ועיר', a.no_school ? 'לא לומד/ת בבית ספר כרגע' : a.school_city) + field('כיתה', a.grade) + field('נוסח', a.nusach) + field('פרשה', a.parasha) +
@@ -228,10 +252,11 @@ function renderApps(filter) {
 function exportXlsx() {
   if (!adminApps.length) { alert('אין נרשמים לייצוא.'); return null; }
   const headers = ['שם פרטי', 'בית ספר ועיר', 'כיתה', 'דוא"ל', 'דוא"ל של',
-    'נוסח', 'פרשה', 'סטטוס', 'הערות צוות', 'תאריך הרשמה'];
+    'נוסח', 'פרשה', 'סטטוס', 'הערות צוות', 'מקור', 'תאריך הרשמה'];
   const rows = adminApps.map(a => [
     a.first_name || '', a.school_city || '', a.grade || '', a.email, a.email_owner,
     a.nusach || '', a.parasha || '', a.status, a.reviewer_notes || '',
+    sourceExportLabel(a.source),
     new Date(a.created_at).toLocaleString('he-IL')
   ]);
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);

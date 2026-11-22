@@ -221,3 +221,5 @@ fieldset.samples legend{font-weight:800;padding:0 8px}
 #parasha-options li{padding:9px 12px;cursor:pointer;border-radius:8px;font-weight:600;text-align:right}
 #parasha-options li:hover,#parasha-options li[aria-selected="true"]{background:var(--gold-light)}
 [hidden]{display:none!important}
+.source-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.source-chip{background:#E3F2FD;color:#1565C0;margin-inline-start:6px}
